@@ -22,14 +22,21 @@
         pkgs = import nixpkgs {
           inherit system overlays;
         };
+        toolchain = pkgs.rust-bin.stable.latest.default.override {
+          extensions = [ "rust-src" ];
+        };
       in
       {
         devShells.default =
           with pkgs;
           mkShell {
             buildInputs = [
-              rust-bin.stable.latest.default
+              toolchain
             ];
+
+            env = {
+              RUST_SRC_PATH = "${toolchain}/lib/rustlib/src/rust/library";
+            };
 
           };
       }
